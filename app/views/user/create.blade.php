@@ -4,7 +4,7 @@
     width: 300px;
   }
 </style>
-Create New User
+Add New User
 <div class="form-user">
 {{ Form::open(array('url' => 'user')) }}
     <div class="form-group">
@@ -60,6 +60,7 @@ Create New User
     </div>
 
     {{ Form::submit('Save ', array('class' => 'btn btn-primary')) }}
+    {{ link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default']) }}
 
   {{ Form::close() }}
 </div>

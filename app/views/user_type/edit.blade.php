@@ -4,7 +4,7 @@
     width: 500px;
   }
 </style>
-Update User
+Update User Type
 <div class="form-user-type">
   {{ Form::model($userType, array('route' => array('user_type.update', $userType->id), 'method' => 'PUT')) }}
     <div class="form-group">

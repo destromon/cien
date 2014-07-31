@@ -18,7 +18,7 @@ List of Users
     </div>
 </div>
 @endif
-<a href="{{ URL::to('user/create') }}"> Create New User </a> <br/>
+<a href="{{ URL::to('user/create') }}"> Add New User </a> <br/>
 
 @if(count($users) != 0)
 <table class="table table-striped table-hover table-bordered">

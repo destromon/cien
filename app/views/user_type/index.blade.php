@@ -18,7 +18,7 @@ List of User Types
     </div>
 </div>
 @endif
-<a href="{{ URL::to('user_type/create') }}"> Create New User Type </a> <br/>
+<a href="{{ URL::to('user_type/create') }}"> Add New User Type </a> <br/>
 
 @if(count($userTypes) != 0)
 <table class="table table-striped table-hover table-bordered">
