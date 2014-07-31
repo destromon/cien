@@ -66,7 +66,6 @@ class UserController extends BaseController {
 			$user->user_first 	 = Input::get('user_first');
 			$user->user_last 	 = Input::get('user_last');
 			$user->user_middle	 = Input::get('user_middle');
-			$user->user_access 	 = Input::get('user_access');
 			$user->save();
 
 			Session::flash('message', 'User successfully created');
@@ -101,7 +100,6 @@ class UserController extends BaseController {
 			'user_password' => 'required|confirmed',
 			'user_first' 	=> 'required',
 			'user_last' 	=> 'required',
-			'user_access' 	=> 'required'
 		);
 
 		//validate posted data
@@ -119,7 +117,6 @@ class UserController extends BaseController {
 			$user->user_first 	 = Input::get('user_first');
 			$user->user_last 	 = Input::get('user_last');
 			$user->user_middle	 = Input::get('user_middle');
-			$user->user_access 	 = Input::get('user_access');
 			$user->save();
 
 			Session::flash('message', 'User successfully updated');

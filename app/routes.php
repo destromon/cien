@@ -29,8 +29,13 @@ Route::get('logout', function() {
 //group controller
 Route::group(array('before' => 'auth'), function()
 {	
+	Route::get('admin', 'AdminController@index');
+
 	Route::resource('user', 'UserController');
-    Route::get('admin', 'AdminController@index');
+	Route::resource('user_type', 'UserTypeController');
+	Route::resource('page', 'PageController');
+	Route::resource('user_page', 'UserPageController');
+    
 });
 
 

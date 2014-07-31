@@ -1,6 +1,6 @@
 @extends('back')
 <p class="lead">
-List of Users
+List of User Types
 </p>
 @if (Session::has('message'))
 <div class="bs-example">
@@ -18,32 +18,27 @@ List of Users
     </div>
 </div>
 @endif
-<a href="{{ URL::to('user/create') }}"> Create New User </a> <br/>
+<a href="{{ URL::to('user_type/create') }}"> Create New User Type </a> <br/>
 
-@if(count($users) != 0)
+@if(count($userTypes) != 0)
 <table class="table table-striped table-hover table-bordered">
-<?php echo $users->links(); ?>
     <th colspan="2"> Action </th>
     <th> ID </th>
-    <th> Name </th>
-    <th> Email </th>  
+    <th> Types of User </th>
     <tbody>
-        @foreach($users as $user)
+        @foreach($userTypes as $userType)
         <tr>
             <td width="50">
-            {{ Form::open(array('url' => 'user/' . $user->id, 'class' => 'pull-right')) }}
+            {{ Form::open(array('url' => 'user_type/' . $userType->id, 'class' => 'pull-right')) }}
                 {{ Form::hidden('_method', 'DELETE') }}
                 {{ Form::submit('Delete ', array('class' => 'btn btn-danger')) }}
             {{ Form::close() }} 
             </td>
-            <td width="50"> <a class="btn btn-small btn-info" href="{{ URL::to('user/' . $user->id . '/edit') }}">Edit</a> </td>
-            <td> {{ $user->id }}  </td>
+            <td width="50"> <a class="btn btn-small btn-info" href="{{ URL::to('user_type/' . $userType->id . '/edit') }}">Edit</a> </td>
+            <td> {{ $userType->id }}  </td>
             <td>
-                {{ $user->user_last }}
-                {{ $user->user_first }}
-                {{ $user->user_middle }}
+                {{ $userType->user_type_name }}
             </td>
-            <td> {{ $user->user_email }} </td>
         </tr>
         @endforeach
     </tbody>
@@ -53,4 +48,3 @@ List of Users
   <p> No Record Found </p>
 </div>
 @endif
-<?php echo $users->links(); ?>

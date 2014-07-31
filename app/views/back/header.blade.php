@@ -4,7 +4,10 @@
 	}
 	.navbar-form {
 		margin-top:15px;
-	}	
+	}
+
+
+
 </style>
 <div class="navbar navbar-default">
   <div class="navbar-header">
@@ -21,12 +24,11 @@
           <li><a href="{{ URL::to('user/create') }}">Create New User</a></li>
         </ul>
       </li>
-
       <li class="dropdown">
         <a href="artwork " class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="{{ URL::to('page') }}"> Page </a></li>
-          <li><a href="{{ URL::to('user_type') }}"> User Type </a></li>
+          <li><a href="{{ URL::to('page') }}"> List of Pages </a></li>
+          <li><a href="{{ URL::to('user_type') }}"> User Types </a></li>
           <li><a href="{{ URL::to('access_rights') }}"> Access Rights / Priviledges</a></li>
         </ul>
       </li>

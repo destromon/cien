@@ -10,7 +10,7 @@ class LoginController extends \BaseController {
 	public function index()
 	{
 		if(Auth::check()) {
-			return Redirect::to('back.admin');
+			return Redirect::to('admin');
 		}
 		
 		return View::make('login.index');
