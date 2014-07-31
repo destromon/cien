@@ -9,7 +9,11 @@ class PageController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		//get all pages
+		$pages = Page::all();
+
+		return View::make('page.index')
+			->with(array('pages' => $pages));
 	}
 
 
@@ -20,7 +24,8 @@ class PageController extends \BaseController {
 	 */
 	public function create()
 	{
-		//
+		//create a 'create view' for page 
+		return View::make('page.create');
 	}
 
 
@@ -31,7 +36,27 @@ class PageController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		//create rules 
+		$rules = array(
+			'page_name' => 'required|unique:page'
+		);
+
+		//validate posted data
+		$validator = Validator::make(Input::all(), $rules);
+		
+		//check if data is ok
+		if($validator->fails()) {
+			return Redirect::to('page/create')
+				->withErrors($validator);
+		} else {
+			$page = new page;
+			$page->page_name = Input::get('page_name');
+			$page->save();
+
+			Session::flash('message', 'Page successfully created');
+
+			return Redirect::to('page');
+		}
 	}
 
 
@@ -55,7 +80,8 @@ class PageController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		return View::make('page.edit')
+			->with(array('page'=>Page::find($id)));
 	}
 
 
@@ -67,7 +93,27 @@ class PageController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		//create rules 
+		$rules = array(
+			'page_name' => 'required|unique:page,page_name' . ($id ? ",$id" : '')
+		);
+
+		//validate posted data
+		$validator = Validator::make(Input::all(), $rules);
+		
+		//check if data is ok
+		if($validator->fails()) {
+			return Redirect::to('page/' . $id . '/edit')
+				->withErrors($validator);				
+		} else {
+			$page = Page::find($id);
+			$page->page_name = Input::get('page_name');
+			$page->save();
+
+			Session::flash('message', 'Page successfully updated');
+
+			return Redirect::to('page');
+		}
 	}
 
 
@@ -79,7 +125,11 @@ class PageController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$page = Page::find($id);
+		$page->delete();
+
+		Session::flash('delete', 'Page successfully deleted');
+		return Redirect::to('page');
 	}
 
 

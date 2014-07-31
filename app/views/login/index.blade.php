@@ -1,4 +1,4 @@
-@extends('page/header')
+@extends('front/header')
 <head>
 <title>Login - Page</title>
 @include('global/css')

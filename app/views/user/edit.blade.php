@@ -60,6 +60,7 @@ Update User
     </div>
 
     {{ Form::submit('Update ', array('class' => 'btn btn-primary')) }}
+    {{ link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default']) }}
 
   {{ Form::close() }}
 </div>
