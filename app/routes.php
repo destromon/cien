@@ -34,7 +34,7 @@ Route::group(array('before' => 'auth'), function()
 	Route::resource('user', 'UserController');
 	Route::resource('user_type', 'UserTypeController');
 	Route::resource('page', 'PageController');
-	Route::resource('user_page', 'UserPageController');
+	Route::resource('access_rights', 'AccessRightsController');
     
 });
 
