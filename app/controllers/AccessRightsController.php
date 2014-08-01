@@ -58,7 +58,21 @@ class AccessRightsController extends \BaseController {
 				->withErrors($validator);
 		} else {
 
-			$pageNames = Input::get('page_name');
+			$pageNames 		= Input::get('page_name');
+			$user_type_name = Input::get('user_type_name');
+			
+			$exists = AccessRights::where('user_type_name', '=', $user_type_name)->first();
+			if($exists) {
+				Session::flash('error', 'Theres already an assigned pages in User Type ' . $user_type_name);
+					return Redirect::to('access_rights');
+			}
+
+			$existsInUserType = UserType::where('user_type_name', '=', $user_type_name)->first();
+			if(!$existsInUserType) {
+				Session::flash('error', $user_type_name .' User type doesnt exist in the database.');
+					return Redirect::to('access_rights');
+			}
+
 			if($pageNames) {
 				foreach ($pageNames as $pageName) {
 					$page = Page::where('page_name', '=', $pageName)->first();
