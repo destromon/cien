@@ -26,32 +26,36 @@ Access Rights List.
     </div>
 </div>
 @endif
+
 <a href="{{ URL::to('access_rights/create') }}"> Assign Pages </a> <br/>
 
 @if(count($accessRights) != 0)
 <table class="table table-striped table-hover table-bordered">
-    <th colspan="2"> Action </th>
+    <th> Action </th>
     <th> ID </th>
     <th> Types of User </th>
     <th> Pages </th>
     <tbody>
+        <?php $temp ='' ?>
         @foreach($accessRights as $accessRight)
+
+        @if($temp == '' OR $temp != $accessRight->user_type_name)
+        </td>
+        </tr>
         <tr>
-            <td width="50">
-            {{ Form::open(array('url' => 'access_rights/' . $accessRight->id, 'class' => 'pull-right')) }}
-                {{ Form::hidden('_method', 'DELETE') }}
-                {{ Form::submit('Delete ', array('class' => 'btn btn-danger')) }}
-            {{ Form::close() }} 
-            </td>
             <td width="50"> <a class="btn btn-small btn-info" href="{{ URL::to('access_rights/' . $accessRight->id . '/edit') }}">Edit</a> </td>
-            <td> {{ $accessRight->id }}  </td>
+            <td>
+                {{ $accessRight->id }}
+            </td>
             <td>
                 {{ $accessRight->user_type_name }}
             </td>
             <td>
-                {{ $accessRight->page_name }}
-            </td>
-        </tr>
+                | {{ $accessRight->page_name }} |
+        @else
+            {{ $accessRight->page_name }} |
+        @endif
+        <?php $temp = $accessRight->user_type_name; ?>
         @endforeach
     </tbody>
 </table>

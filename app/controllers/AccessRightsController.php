@@ -10,7 +10,7 @@ class AccessRightsController extends \BaseController {
 	public function index()
 	{
 		//get all user type 
-		$accessRights = AccessRights::all();
+		$accessRights = AccessRights::orderBy('user_type_name', 'asc')->get();
 
 		return View::make('access_rights.index')
 			->with(array('accessRights' => $accessRights));
