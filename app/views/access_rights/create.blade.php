@@ -30,7 +30,10 @@
 
 <?php $types = array() ?>
 @foreach($userTypes as $userType)
+    <?php $found = AccessRights::where('user_type_name', '=', $userType->user_type_name)->get(); ?>
+    @if(count($found) == 0)
     <?php $types[$userType->user_type_name] = $userType->user_type_name ?>
+    @endif
 @endforeach
 
 <div class="form-access-rights">
