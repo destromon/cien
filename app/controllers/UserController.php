@@ -2,20 +2,28 @@
 
 class UserController extends BaseController {
 
+	public function __construct()
+	{	
+		$this->beforeFilter(function(){
+			$checkAccessRights = AccessRights::checkAccessRights();
+			if(!$checkAccessRights) {
+				echo 'yeah';
+				return Redirect::to('admin')
+				->with('warning', 'You dont have an access to this page.');
+			}
+		});
+	}
+
 	/*
 	 * display user listing
 	 * 
 	 * @param
 	 * @return
 	 */
-	function __construct()
-	{
-
-	}
 	public function index()
 	{
-		//get all users in the database
-		
+
+		//get all users in the database		
 		$users = User::where('id', '!=',  Auth::user()->id)->paginate(15);
 
 		//create a view for index page
@@ -31,7 +39,11 @@ class UserController extends BaseController {
 	 */
 	public function create()
 	{
-		return View::make('user.create');
+		//get user type
+		$userTypes = UserType::select('user_type_name')->get();
+
+		return View::make('user.create')
+			->with(array('userTypes' => $userTypes));
 	}
 
 	/*
@@ -66,6 +78,7 @@ class UserController extends BaseController {
 			$user->user_first 	 = Input::get('user_first');
 			$user->user_last 	 = Input::get('user_last');
 			$user->user_middle	 = Input::get('user_middle');
+			$user->user_access	 = Input::get('user_access');
 			$user->save();
 
 			Session::flash('message', 'User successfully created');
@@ -82,8 +95,13 @@ class UserController extends BaseController {
 	 */
 	public function edit($id) 
 	{
+		//get user type
+		$userTypes = UserType::select('user_type_name')->get();
+
 		return View::make('user.edit')
-			->with(array('user'=>User::find($id)));
+			->with(array(
+				'user' 		=> User::find($id),
+				'userTypes' => $userTypes));
 	}
 
 	/*
@@ -100,6 +118,7 @@ class UserController extends BaseController {
 			'user_password' => 'required|confirmed',
 			'user_first' 	=> 'required',
 			'user_last' 	=> 'required',
+			'user_access'	=> 'required'
 		);
 
 		//validate posted data
@@ -117,6 +136,7 @@ class UserController extends BaseController {
 			$user->user_first 	 = Input::get('user_first');
 			$user->user_last 	 = Input::get('user_last');
 			$user->user_middle	 = Input::get('user_middle');
+			$user->user_access	 = Input::get('user_access');
 			$user->save();
 
 			Session::flash('message', 'User successfully updated');

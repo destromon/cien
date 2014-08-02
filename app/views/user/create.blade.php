@@ -56,7 +56,12 @@ Add New User
         @if ($errors->has('user_access'))
         <span class="bg-danger"> {{ $errors->first('user_access') }} </span>
         @endif
-        {{ Form::select('user_access', array('admin' => 'Administrator', 'user' => 'User'), Input::old('user_accesslevel'), array('class' => 'form-control')) }}
+        <?php $types = array() ?>
+
+        @foreach($userTypes as $userType)
+            <?php $types[$userType->user_type_name] = $userType->user_type_name; ?>
+        @endforeach
+        {{ Form::select('user_access', $types, Input::old('user_accesslevel'), array('class' => 'form-control')) }}
     </div>
 
     {{ Form::submit('Save ', array('class' => 'btn btn-primary')) }}

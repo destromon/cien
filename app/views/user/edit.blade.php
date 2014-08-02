@@ -52,11 +52,16 @@ Update User
     </div>
 
     <div class="form-group">
-      {{ Form::label('user_access', 'Access Level') }}
-      @if ($errors->has('user_access'))
-      <span class="bg-danger"> {{ $errors->first('user_access') }} </span>
-      @endif
-      {{ Form::select('user_access', array('admin' => 'Administrator', 'user' => 'User'), Input::old('user_accesslevel'), array('class' => 'form-control')) }}
+        {{ Form::label('user_access', 'Access Level') }}
+        @if ($errors->has('user_access'))
+        <span class="bg-danger"> {{ $errors->first('user_access') }} </span>
+        @endif
+        <?php $types = array() ?>
+
+        @foreach($userTypes as $userType)
+            <?php $types[$userType->user_type_name] = $userType->user_type_name; ?>
+        @endforeach
+        {{ Form::select('user_access', $types, null, array('class' => 'form-control')) }}
     </div>
 
     {{ Form::submit('Update ', array('class' => 'btn btn-primary')) }}

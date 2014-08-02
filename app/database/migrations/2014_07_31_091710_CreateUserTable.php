@@ -20,6 +20,7 @@ class CreateUserTable extends Migration {
 			$table->string('user_first', '20');
 			$table->string('user_last', '20');
 			$table->string('user_middle', '100')->nullable;
+			$table->string('user_access');
 			$table->boolean('active')->default(1);
 			$table->string('remember_token', '100');
 			$table->timestamps();

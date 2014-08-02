@@ -18,7 +18,8 @@ class UserSeeder extends Seeder {
 		'user_password' => Hash::make('1234'),
 		'user_first'	=> 'Jes',
 		'user_last'	=>	'Tadena',
-		'user_middle'	=>	'Gee'
+		'user_middle'	=>	'Gee',
+		'user_access'	=>	'Administrator'
 		];
 
 		DB::table('user')->insert($user);
