@@ -5,11 +5,13 @@ class AccessRightsController extends \BaseController {
 	public function __construct()
 	{	
 		$this->beforeFilter(function(){
-			$checkAccessRights = AccessRights::checkAccessRights();
-			if(!$checkAccessRights) {
-				echo 'yeah';
-				return Redirect::to('admin')
-				->with('warning', 'You dont have an access to this page.');
+				if(Auth::user()->user_access != 'Administrator') {
+					$checkAccessRights = AccessRights::checkAccessRights();
+				if(!$checkAccessRights) {
+					echo 'yeah';
+					return Redirect::to('admin')
+					->with('warning', 'You dont have an access to this page.');
+				}	
 			}
 		});
 	}
