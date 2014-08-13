@@ -15,8 +15,8 @@ class CreateAccessRightsTable extends Migration {
 		Schema::create('access_rights', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('user_type_name', '100');
-			$table->string('page_name', '100');
+			$table->string('user_type_id', '100');
+			$table->string('page_id', '100');
 			$table->timestamps();
 		});
 	}

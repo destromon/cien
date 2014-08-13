@@ -1,36 +1,34 @@
 @include('front/header')
 <head>
-<title>Login - Page</title>
+<title>Registration Page</title>
 @include('global/css')
 <style>
 	body {
 		background: url('/images/bg.png');
 		overflow-y: hidden;
 		overflow-x: hidden;
-		
 	}
-	.page-login{
-		margin-top:45px;
+
+	.page-register{
+		margin-top:120px;
 	}
 
 	.footer {
 		bottom: 0;
 		position: absolute;
-		overflow: hidden;
 	}
 </style>
 </head>
-
 <body>
 <div class="container-fluid">
-	<div id="page-login" class="row page-login">
+	<div id="page-register" class="row page-register">
 		<div class="col-xs-12 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
 			<div class="box">
 				<div class="box-content">
 					<div class="text-center">
-						<h3 class="page-header"><i class="fa fa-sign-in"> </i> Login Page</h3>
+						<h3 class="page-header"> <i class="fa fa-user"></i> Registration Page</h3>
 					</div>			
-					{{ Form::open(array('url' => 'login')) }}
+					{{ Form::open(array('url' => 'register')) }}
 					    <div class="form-group">
 					      {{ Form::label('email', 'Email') }}
 					      @if ($errors->has('user_email'))
@@ -46,11 +44,14 @@
 					      @endif
 					      {{ Form::password('user_password', array('class' => 'form-control')) }}
 					    </div>
+						<div class="form-group">
+						  {{ Form::label('user_password_confirmation', 'Confirm Password') }}
+						  {{ Form::password('user_password_confirmation', array('class' => 'form-control')) }}
+						</div>
+					    {{ Form::submit('Register ', array('class' => 'btn btn-primary')) }}
+					    <a href="{{ URL::to('login')}}" class="pull-right"> Go to login page</a>
 
-					    {{ Form::submit('Login ', array('class' => 'btn btn-primary')) }}
-					    <a href={{ URL::to('register')}} class="pull-right"> Create New Account </a>
 					{{ Form::close() }}
-					
 					@if (Session::has('message'))
 					  <div class="alert bg-danger">{{ Session::get('message') }}</div>
 					@endif

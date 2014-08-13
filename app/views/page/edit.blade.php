@@ -4,6 +4,14 @@
     width: 500px;
   }
 </style>
+@if (Session::has('message'))
+    <div class="bs-example">
+        <div class="alert bg-success">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            {{ Session::get('message') }}
+        </div>
+    </div>
+@endif
 Update Page
 <div class="form-page">
   {{ Form::model($page, array('route' => array('page.update', $page->id), 'method' => 'PUT')) }}
@@ -15,8 +23,10 @@ Update Page
       {{ Form::text('page_name', null, array('class' => 'form-control')) }}
     </div>
 
-    {{ Form::submit('Update ', array('class' => 'btn btn-primary')) }}
-    {{ link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default']) }}
+    {{ Form::submit('Save', array('class' => 'btn btn-primary', 'name' => 'save')) }}
+    {{ Form::submit('Save and New', array('class' => 'btn btn-info', 'name' => 'save_and_new')) }}
+    {{ Form::submit('Save and Close', array('class' => 'btn btn-success', 'name' => 'save_and_close')) }}
+    {{ link_to(Request::segment(1), 'Cancel', ['class' => 'btn btn-danger']) }}
 
   {{ Form::close() }}
 </div>

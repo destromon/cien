@@ -10,3 +10,5 @@
 {{ HTML::script('js/jquery.fancybox-media.js') }}
 {{ HTML::script('js/jquery.fancybox-buttons.js') }}
 {{ HTML::script('js/jquery.fancybox-thumbs.js') }}
+{{ HTML::script('js/bootstrap-datepicker.js') }}
+{{ HTML::script('js/jquery.number.min.js') }}

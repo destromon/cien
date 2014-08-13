@@ -4,15 +4,16 @@ class UserController extends BaseController {
 
 	public function __construct()
 	{	
+		//if user edit		
+
 		$this->beforeFilter(function(){
-				if(Auth::user()->user_access != 'Administrator') {
-					$checkAccessRights = AccessRights::checkAccessRights();
+			if(Auth::user()->user_access != 'Administrator') {
+				$checkAccessRights = AccessRights::checkAccessRights();
 				if(!$checkAccessRights) {
-					echo 'yeah';
 					return Redirect::to('admin')
 					->with('warning', 'You dont have an access to this page.');
-				}	
-			}
+					}	
+				}
 		});
 	}
 
@@ -42,7 +43,7 @@ class UserController extends BaseController {
 	public function create()
 	{
 		//get user type
-		$userTypes = UserType::select('user_type_name')->get();
+		$userTypes = UserType::select('id', 'user_type_name')->get();
 
 		return View::make('user.create')
 			->with(array('userTypes' => $userTypes));
@@ -74,6 +75,15 @@ class UserController extends BaseController {
 				->withErrors($validator)
 				->withInput(Input::except('password'));
 		} else {
+
+			$userTypeId = Input::get('user_access');
+			$existsUserType = UserType::where('id', '=', $userTypeId)->first();
+			if(!$existsUserType) {
+				return Redirect::to('user/create')
+				->with('error', 'User Type doesnt exists')
+				->withInput(Input::except('password'));
+			}
+
 			$user = new User;
 			$user->user_email    = Input::get('user_email');
 			$user->user_password = Hash::make(Input::get('user_password'));
@@ -81,12 +91,44 @@ class UserController extends BaseController {
 			$user->user_last 	 = Input::get('user_last');
 			$user->user_middle	 = Input::get('user_middle');
 			$user->user_access	 = Input::get('user_access');
+			$user->active	 	 = true;
 			$user->save();
 
-			Session::flash('message', 'User successfully created');
+			Session::flash('message', 'User successfully added');
+			if(Input::get('save')) {
+				return Redirect::to('user/' . $user->id . '/edit');
+			}
 
-			return Redirect::to('user');
+			if(Input::get('save_and_close')) {
+				return Redirect::to('user');
+			}
+
+			if(Input::get('save_and_new')) {
+				return Redirect::to('user/create');
+			}
 		}
+	}
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show()
+	{
+		$search = Input::get('search');
+		$users = User::where('user_last', 'LIKE', '%' . $search .'%')
+			->orWhere('user_first', 'LIKE', '%' . $search .'%')
+			->orwhere('user_middle', 'LIKE', '%' . $search .'%')
+			->orwhere('user_email', 'LIKE', '%' . $search .'%')
+			->orderBy('user_last', 'asc')
+			->paginate(15);
+
+		return View::make('user.show')
+			->with(array(
+				'users'  => $users,
+				'search' => $search));
 	}
 
 	/*
@@ -98,7 +140,7 @@ class UserController extends BaseController {
 	public function edit($id) 
 	{
 		//get user type
-		$userTypes = UserType::select('user_type_name')->get();
+		$userTypes = UserType::select('id', 'user_type_name')->get();
 
 		return View::make('user.edit')
 			->with(array(
@@ -143,7 +185,18 @@ class UserController extends BaseController {
 
 			Session::flash('message', 'User successfully updated');
 
+		}
+	
+		if(Input::get('save')) {
+			return Redirect::to('user/' . $user->id . '/edit');
+		}
+
+		if(Input::get('save_and_close')) {
 			return Redirect::to('user');
+		}
+
+		if(Input::get('save_and_new')) {
+			return Redirect::to('user/create');
 		}
 	}
 
@@ -161,5 +214,4 @@ class UserController extends BaseController {
 		Session::flash('delete', 'User successfully deleted');
 		return Redirect::to('user');
 	}
-
 }

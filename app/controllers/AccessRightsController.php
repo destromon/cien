@@ -5,14 +5,13 @@ class AccessRightsController extends \BaseController {
 	public function __construct()
 	{	
 		$this->beforeFilter(function(){
-				if(Auth::user()->user_access != 'Administrator') {
-					$checkAccessRights = AccessRights::checkAccessRights();
+			if(Auth::user()->user_access != 'Administrator') {
+				$checkAccessRights = AccessRights::checkAccessRights();
 				if(!$checkAccessRights) {
-					echo 'yeah';
 					return Redirect::to('admin')
 					->with('warning', 'You dont have an access to this page.');
-				}	
-			}
+					}	
+				}
 		});
 	}
 	
@@ -24,7 +23,11 @@ class AccessRightsController extends \BaseController {
 	public function index()
 	{
 		//get all user type 
-		$accessRights = AccessRights::orderBy('user_type_name', 'asc')->get();
+		$accessRights = DB::table('access_rights')
+			->join('user_type', 'user_type.id', '=', 'access_rights.user_type_id')
+			->join('page', 'page.id', '=', 'access_rights.page_id')
+			->orderBy('access_rights.user_type_id')
+			->paginate(15);
 
 		return View::make('access_rights.index')
 			->with(array('accessRights' => $accessRights));
@@ -61,7 +64,7 @@ class AccessRightsController extends \BaseController {
 	{
 		//create rules 
 		$rules = array(
-			'user_type_name'    => 'required'
+			'user_type_id'    => 'required'
 		);
 
 		//validate posted data
@@ -73,41 +76,41 @@ class AccessRightsController extends \BaseController {
 				->withErrors($validator);
 		} else {
 
-			$pageNames 		= Input::get('page_name');
-			$user_type_name = Input::get('user_type_name');
+			$pageId 		= Input::get('page_id');
+			$user_type_id = Input::get('user_type_id');
 			
 			//check if theres already an assigned pages to user
-			$exists = AccessRights::where('user_type_name', '=', $user_type_name)->first();
+			$exists = AccessRights::where('user_type_id', '=', $user_type_id)->first();
 			if($exists) {
 				Session::flash('error', 'Theres already an assigned pages in User Type ' . $user_type_name);
 					return Redirect::to('access_rights');
 			}
 
 			//check if user type exists
-			$existsInUserType = UserType::where('user_type_name', '=', $user_type_name)->first();
+			$existsInUserType = UserType::where('id', '=', $user_type_id)->first();
 
 			//if not, return an error
 			if(!$existsInUserType) {
-				Session::flash('error', $user_type_name .' User type doesnt exist in the database.');
+				Session::flash('error', 'User type doesnt exist in the database.');
 					return Redirect::to('access_rights');
 			}
 
 			//assign access rights based on checked pages
-			if($pageNames) {
+			if($pageId) {
 				//loop through checked pages
-				foreach ($pageNames as $pageName) {
+				foreach ($pageId as $id) {
 					//check if page is really existing
-					$page = Page::where('page_name', '=', $pageName)->first();
+					$page = Page::where('id', '=', $id)->first();
 					//save if exists
 					if($page) {
 						$access_rights = new AccessRights;
-						$access_rights->user_type_name = Input::get('user_type_name');
-						$access_rights->page_name 	   = $pageName;
+						$access_rights->user_type_id = Input::get('user_type_id');
+						$access_rights->page_id 	 = $id;
 						$access_rights->save();	
 
 					//return an error
 					} else {
-						Session::flash('error', 'No ' . $pageName . ' found in Pages');
+						Session::flash('error', 'Page with id '. $id .' not found');
 
 						return Redirect::to('access_rights');
 					}
@@ -127,9 +130,21 @@ class AccessRightsController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show()
 	{
-		//
+		$search = Input::get('search');
+		$accessRights = DB::table('access_rights')
+			->join('user_type', 'user_type.id', '=', 'access_rights.user_type_id')
+			->join('page', 'page.id', '=', 'access_rights.page_id')
+			->where('user_type_name', 'LIKE', '%' . $search .'%')
+			->orWhere('page_name', 'LIKE', '%' . $search .'%')
+			->orderBy('access_rights.user_type_id')
+			->paginate(15);
+
+		return View::make('access_rights.show')
+			->with(array(
+				'accessRights'  => $accessRights,
+				'search' => $search));
 	}
 
 
@@ -141,12 +156,18 @@ class AccessRightsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
+		//get user type
+		$userType = DB::table('access_rights')
+			->join('user_type', 'user_type.id', '=', 'access_rights.user_type_id')
+			->where('user_type_id', '=', $id)
+			->first();
+
 		//get all pages
 		$pages = Page::select('id', 'page_name')->get();
 
 		return View::make('access_rights.edit')
 			->with(array(
-				'userType' => AccessRights::find($id),
+				'userType' => $userType,
 				'pages'	   => $pages));
 	}
 
@@ -161,11 +182,11 @@ class AccessRightsController extends \BaseController {
 	{
 		//create rules 
 		$rules = array(
-			'user_type_name'    => 'required'
+			'user_type_id'    => 'required'
 		);
 
-		$pageNames 		= Input::get('page_name');
-		$user_type_name = Input::get('user_type_name');
+		$pageId 	  = Input::get('page_id');
+		$user_type_id = Input::get('user_type_id');
 
 		//validate posted data
 		$validator = Validator::make(Input::all(), $rules);
@@ -177,29 +198,29 @@ class AccessRightsController extends \BaseController {
 		} else {
 
 			//check if user type exists
-			$existsInUserType = UserType::where('user_type_name', '=', $user_type_name)->first();
+			$existsInUserType = UserType::where('id', '=', $user_type_id)->first();
 
 			//if not, return an error
 			if(!$existsInUserType) {
-				Session::flash('error', $user_type_name .' User type doesnt exist in the database.');
+				Session::flash('error', 'User type doesnt exist in the database.');
 					return Redirect::to('access_rights');
 			}
 
 			//delete all access rights
-			$delete = AccessRights::where('user_type_name', '=', Input::get('user_type_name'))
+			$delete = AccessRights::where('user_type_id', '=', $user_type_id)
 				->delete();
 
 			//assign access rights based on checked pages
-			if($pageNames) {
+			if($pageId) {
 				//loop through checked pages
-				foreach ($pageNames as $pageName) {
+				foreach ($pageId as $id) {
 					//check if page is really existing
-					$page = Page::where('page_name', '=', $pageName)->first();
+					$page = Page::where('id', '=', $id)->first();
 					//save if exists
 					if($page) {
 						$access_rights = new AccessRights;
-						$access_rights->user_type_name = Input::get('user_type_name');
-						$access_rights->page_name 	   = $pageName;
+						$access_rights->user_type_id = $user_type_id;
+						$access_rights->page_id 	 = $id;
 						$access_rights->save();	
 
 					//return an error

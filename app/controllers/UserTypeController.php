@@ -5,14 +5,13 @@ class UserTypeController extends \BaseController {
 	public function __construct()
 	{	
 		$this->beforeFilter(function(){
-				if(Auth::user()->user_access != 'Administrator') {
-					$checkAccessRights = AccessRights::checkAccessRights();
+			if(Auth::user()->user_access != 'Administrator') {
+				$checkAccessRights = AccessRights::checkAccessRights();
 				if(!$checkAccessRights) {
-					echo 'yeah';
 					return Redirect::to('admin')
 					->with('warning', 'You dont have an access to this page.');
-				}	
-			}
+					}	
+				}
 		});
 	}
 	
@@ -24,7 +23,7 @@ class UserTypeController extends \BaseController {
 	public function index()
 	{
 		//get all user type 
-		$userTypes = UserType::all();
+		$userTypes = UserType::paginate(15);
 
 		return View::make('user_type.index')
 			->with(array('userTypes' => $userTypes));
@@ -67,9 +66,19 @@ class UserTypeController extends \BaseController {
 			$userType->user_type_name    = Input::get('user_type_name');
 			$userType->save();
 
-			Session::flash('message', 'User Type successfully created');
+			Session::flash('message', 'User Type successfully added');
 
-			return Redirect::to('user_type');
+			if(Input::get('save')) {
+				return Redirect::to('user_type/' . $userType->id . '/edit');
+			}
+
+			if(Input::get('save_and_close')) {
+				return Redirect::to('user_type');
+			}
+
+			if(Input::get('save_and_new')) {
+				return Redirect::to('user_type/create');
+			}
 		}
 	}
 
@@ -80,9 +89,16 @@ class UserTypeController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show()
 	{
-		//
+		$search = Input::get('search');
+		$userTypes = UserType::where('user_type_name', 'LIKE', '%' . $search .'%')
+			->paginate(15);
+
+		return View::make('user_type.show')
+			->with(array(
+				'userTypes'  => $userTypes,
+				'search' => $search));
 	}
 
 
@@ -127,7 +143,13 @@ class UserTypeController extends \BaseController {
 
 			Session::flash('message', 'User Type successfully updated');
 
-			return Redirect::to('user_type');
+			if(Input::get('save_and_close')) {
+				return Redirect::to('user_type');
+			}
+
+			if(Input::get('save_and_new')) {
+				return Redirect::to('user_type/create');
+			}
 		}
 	}
 

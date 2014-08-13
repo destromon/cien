@@ -1,9 +1,26 @@
 @extends('back')
 <style>
   .form-user{
-    width: 300px;
+    width: 450px;
   }
 </style>
+@if (Session::has('error'))
+    <div class="bs-example">
+        <div class="alert bg-danger">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            {{ Session::get('error') }}
+        </div>
+    </div>
+@endif
+@if (Session::has('message'))
+    <div class="bs-example">
+        <div class="alert bg-success">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            {{ Session::get('message') }}
+        </div>
+    </div>
+@endif
+
 Add New User
 <div class="form-user">
 {{ Form::open(array('url' => 'user')) }}
@@ -59,13 +76,15 @@ Add New User
         <?php $types = array() ?>
 
         @foreach($userTypes as $userType)
-            <?php $types[$userType->user_type_name] = $userType->user_type_name; ?>
+            <?php $types[$userType->id] = $userType->user_type_name; ?>
         @endforeach
         {{ Form::select('user_access', $types, Input::old('user_accesslevel'), array('class' => 'form-control')) }}
     </div>
 
-    {{ Form::submit('Save ', array('class' => 'btn btn-primary')) }}
-    {{ link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default']) }}
+    {{ Form::submit('Save', array('class' => 'btn btn-primary', 'name' => 'save')) }}
+    {{ Form::submit('Save and New', array('class' => 'btn btn-info', 'name' => 'save_and_new')) }}
+    {{ Form::submit('Save and Close', array('class' => 'btn btn-success', 'name' => 'save_and_close')) }}
+    {{ link_to(Request::segment(1), 'Cancel', ['class' => 'btn btn-danger']) }}
 
   {{ Form::close() }}
 </div>

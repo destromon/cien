@@ -1,6 +1,6 @@
 @extends('back')
 <p class="lead">
-Access Rights List.
+Access Rights List with '{{$search}}'
 </p>
 @if (Session::has('message'))
 <div class="bs-example">

@@ -46,7 +46,34 @@ class LoginController extends \BaseController {
 				'user_password' => Input::get('user_password')
 			);
 			
+			//check if account is active
+			$user = User::where('user_email', '=', Input::get('user_email'))
+				->first();
+			if($user) {
+				if($user->active == 0) {
+				return Redirect::to('login')
+					->with('message', 'Please activate your account to proceed.');
+				}
+			} else {
+				return Redirect::to('login')
+					->with('message', 'Account is not existing. Please register to proceed.');
+			}
+			
+
 			if (Auth::attempt($userData)) {
+				if(Auth::user()->user_access == 'public'){
+					if(Session::get('url') == 'cart'){
+						return Redirect::to('/');	
+					}
+
+					return Redirect::to('account')
+						->with('message', 'You are now logged in.');;
+				}
+
+				if(Session::get('url') == 'cart'){
+					return Redirect::to('/');	
+				}
+
 				return Redirect::to('admin')
 					->with('message', 'You are now logged in.');
 			} else {	 	

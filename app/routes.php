@@ -11,6 +11,15 @@
 |
 */
 
+
+/*
+|--------------------------------------------------------------------------
+| Index Routes
+|--------------------------------------------------------------------------
+/
+/ All routes to home
+*/
+
 //index controller
 Route::get('/', 'HomeController@index');
 
@@ -25,17 +34,51 @@ Route::get('logout', function() {
 		->with('logout', 'You are now logged out.');
 });
 
+//register controller
+	Route::get('register', 'RegisterController@index');
+	Route::post('register', 'RegisterController@doRegister');
 
-//group controller
+//activate user
+	Route::get('activate', 'UserPublicController@activate');
+
+
+/*
+|--------------------------------------------------------------------------
+| Backend Routes
+|--------------------------------------------------------------------------
+/
+/ All routes to back-end
+*/
 Route::group(array('before' => 'auth'), function()
 {	
-	Route::get('admin', 'AdminController@index');
 
+	/*
+	|--------------------------------------------------------------------------
+	| Public Routes
+	|--------------------------------------------------------------------------
+	/
+	/ All routes to back-end
+	*/
+	Route::get('/account', 'AccountController@index');
+
+	/*
+	|--------------------------------------------------------------------------
+	| Admin/with access Routes
+	|--------------------------------------------------------------------------
+	/
+	/ All routes to back-end
+	*/
+	Route::get('admin', 'AdminController@index');
+	
 	Route::resource('user', 'UserController');
-	Route::resource('user_type', 'UserTypeController');
-	Route::resource('page', 'PageController');
-	Route::resource('access_rights', 'AccessRightsController');
-    
+
+	//Settings
+	Route::resource('/user_type', 'UserTypeController');
+	Route::resource('/page', 'PageController');
+	Route::resource('/access_rights', 'AccessRightsController');
+
+	//profile
+	Route::resource('/profile', 'ProfileController');
 });
 
 

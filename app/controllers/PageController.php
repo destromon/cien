@@ -5,14 +5,13 @@ class PageController extends \BaseController {
 	public function __construct()
 	{	
 		$this->beforeFilter(function(){
-				if(Auth::user()->user_access != 'Administrator') {
-					$checkAccessRights = AccessRights::checkAccessRights();
+			if(Auth::user()->user_access != 'Administrator') {
+				$checkAccessRights = AccessRights::checkAccessRights();
 				if(!$checkAccessRights) {
-					echo 'yeah';
 					return Redirect::to('admin')
 					->with('warning', 'You dont have an access to this page.');
-				}	
-			}
+					}	
+				}
 		});
 	}
 	
@@ -24,7 +23,7 @@ class PageController extends \BaseController {
 	public function index()
 	{
 		//get all pages
-		$pages = Page::all();
+		$pages = Page::paginate(15);
 
 		return View::make('page.index')
 			->with(array('pages' => $pages));
@@ -67,9 +66,19 @@ class PageController extends \BaseController {
 			$page->page_name = Input::get('page_name');
 			$page->save();
 
-			Session::flash('message', 'Page successfully created');
+			Session::flash('message', 'Page successfully added');
 
-			return Redirect::to('page');
+			if(Input::get('save')) {
+				return Redirect::to('page/' . $page->id . '/edit');
+			}
+
+			if(Input::get('save_and_close')) {
+				return Redirect::to('page');
+			}
+
+			if(Input::get('save_and_new')) {
+				return Redirect::to('page/create');
+			}
 		}
 	}
 
@@ -80,9 +89,16 @@ class PageController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show()
 	{
-		//
+		$search = Input::get('search');
+		$pages = Page::where('page_name', 'LIKE', '%' . $search .'%')
+			->paginate(15);
+
+		return View::make('page.show')
+			->with(array(
+				'pages'  => $pages,
+				'search' => $search));
 	}
 
 
@@ -126,7 +142,17 @@ class PageController extends \BaseController {
 
 			Session::flash('message', 'Page successfully updated');
 
-			return Redirect::to('page');
+			if(Input::get('save')) {
+				return Redirect::to('page/' . $page->id . '/edit');
+			}
+
+			if(Input::get('save_and_close')) {
+				return Redirect::to('page');
+			}
+
+			if(Input::get('save_and_new')) {
+				return Redirect::to('page/create');
+			}
 		}
 	}
 

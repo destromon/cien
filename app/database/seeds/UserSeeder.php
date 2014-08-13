@@ -19,7 +19,8 @@ class UserSeeder extends Seeder {
 		'user_first'	=> 'Jes',
 		'user_last'	=>	'Tadena',
 		'user_middle'	=>	'Gee',
-		'user_access'	=>	'Administrator'
+		'user_access'	=>	'Administrator',
+		'active'	=>	1
 		];
 
 		DB::table('user')->insert($user);

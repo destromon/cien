@@ -38,7 +38,7 @@
       <li class="dropdown">
         <a href="artwork " class="dropdown-toggle" data-toggle="dropdown">Hi  {{ Auth::user()->user_email }} ! <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="{{ URL::to('user/' . Auth::user()->id . '/edit') }}"> Edit Profile </a> </li>          
+          <li><a href="{{ URL::to('profile') }}"> Edit Profile </a> </li>          
           <li><a href="{{ URL::to('logout') }}">Logout</a></li>
         </ul>
       </li>
