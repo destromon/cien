@@ -18,6 +18,20 @@
 		position: absolute;
 		overflow: hidden;
 	}
+
+	.alert {
+		margin-top: 25px;
+	}
+
+	.link-inner {
+		color: #fff;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+
+	.link-inner:hover {
+		color: #ccc;
+	}
 </style>
 </head>
 
@@ -48,7 +62,8 @@
 					    </div>
 
 					    {{ Form::submit('Login ', array('class' => 'btn btn-primary')) }}
-					    <a href={{ URL::to('register')}} class="pull-right"> Create New Account </a>
+					    <a href={{ URL::to('/register')}} class="pull-right"> Create New Account </a> <br/>
+					    <a href={{ URL::to('/forgot')}} class="pull-right"> Forgot Password </a>
 					{{ Form::close() }}
 					
 					@if (Session::has('message'))

@@ -52,7 +52,8 @@ class LoginController extends \BaseController {
 			if($user) {
 				if($user->active == 0) {
 				return Redirect::to('login')
-					->with('message', 'Please activate your account to proceed.');
+					->withInput()
+					->with('message', 'Please activate your account to proceed <a href=/activate/resend?email='. Input::get('user_email') .' class=link-inner> Send Activation Code</a>');
 				}
 			} else {
 				return Redirect::to('login')
@@ -71,7 +72,7 @@ class LoginController extends \BaseController {
 				}
 
 				if(Session::get('url') == 'cart'){
-					return Redirect::to('/');	
+					return Redirect::to('/');	 
 				}
 
 				return Redirect::to('admin')
@@ -79,7 +80,7 @@ class LoginController extends \BaseController {
 			} else {	 	
 				Session::flash('message', 'Invalid Credentials');
 				return Redirect::to('login')
-					->withInput(Input::except('user_passwordd'));
+					->withInput(Input::except('user_password'));
 			}
 		}
 	}

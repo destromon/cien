@@ -13,4 +13,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 	     return $this->attributes['user_password'];
 	}
+
+	public static function exists($email)
+	{
+		$exists = User::where('user_email', '=', $email)
+			->first();
+
+		if($exists) {
+			return true;
+		}
+
+		return false;
+	}
 }

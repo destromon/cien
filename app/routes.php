@@ -35,11 +35,20 @@ Route::get('logout', function() {
 });
 
 //register controller
-	Route::get('register', 'RegisterController@index');
-	Route::post('register', 'RegisterController@doRegister');
+Route::get('register', 'RegisterController@index');
+Route::post('register', 'RegisterController@doRegister');
+
+//forgot password
+Route::get('/forgot', 'PasswordResetRequestController@index');
+Route::post('/forgot', 'PasswordResetRequestController@forgotPassword');
+
+Route::get('/forgot/password', 'PasswordResetRequestController@formForgotPassword');
+Route::get('/forgot/form', 'PasswordResetRequestController@form');
+Route::post('/forgot/form', 'PasswordResetRequestController@doResetPassword');
 
 //activate user
-	Route::get('activate', 'UserPublicController@activate');
+Route::get('/activate', 'UserPublicController@activate');
+Route::get('/activate/resend', 'RegisterController@resendActivation');
 
 
 /*
